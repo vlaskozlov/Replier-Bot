@@ -39,8 +39,17 @@ bot.on('interactionCreate', interaction => {
 
     if(interaction.commandName === 'user-info') {
         interaction.reply({
-            content: `Твой тег пользователя: ${interaction.user.tag}\nТвой айди: ${interaction.user.id}\nМожешь сохранить на память :smile:`,
-            ephemeral: true
+            embeds: [
+                {
+                    title: "Результат выполнения команды",
+                    description: `Твой тег пользователя: ${interaction.user.tag}\nТвой айди: ${interaction.user.id}`,
+                    color: "GREEN",
+                    footer: {
+                        text: "Можешь сохранить себе на память :)"
+                    },
+                }
+            ],
+            ephemeral: false
         })
     }
 });
