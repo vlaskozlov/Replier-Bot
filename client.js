@@ -1,6 +1,7 @@
 const { isApplicationCommandDMInteraction } = require('discord-api-types/utils/v9');
 const Discord = require('discord.js'),
     config = require('./config.json');
+const { intersection } = require('zod');
 config.cfg.intents = new Discord.Intents(config.cfg.intents);       //id guild 927213497631244388
 
 const bot = new Discord.Client(config.cfg);                         //bot.application.commands.fetch()
@@ -21,11 +22,11 @@ bot                                                                 //.then(cons
 
         if(interaction.commandName === 'ping') {
             interaction.reply({
-                content: 'aboba',
-                ephemeral: true
+                content: `🏓Задержка: ${Date.now() - interaction.createdTimestamp}мс. Задержка API Discord: ${Math.round(bot.ws.ping)}мс`,
+                ephemeral: false
             })
         }
-    })
+    });
 
 bot.application.commands.create({
     name: 'user-info',
@@ -42,8 +43,10 @@ bot.on('interactionCreate', interaction => {
             ephemeral: true
         })
     }
-})
+});
 })  
+
+
 
 .on('messageCreate', async (message) => {
     if(message.author.bot) return;
