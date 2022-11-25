@@ -12,17 +12,23 @@ bot                                                                 //.then(cons
     console.log('Бот запущен');
 
     bot.application.commands.create({
-        name: 'ping',
-        description: 'Пик Пок блять',
+        name: 'health',
+        description: 'Задержка хостинга и АПИ ДС',
         defaultPermission: true
     })
 
     bot.on('interactionCreate', interaction => {
         if (!interaction.isCommand()) return;
 
-        if(interaction.commandName === 'ping') {
+        if(interaction.commandName === 'health') {
             interaction.reply({
-                content: `🏓Задержка: ${Date.now() - interaction.createdTimestamp}мс. Задержка API Discord: ${Math.round(bot.ws.ping)}мс`,
+                embeds: [
+                    {
+                    title: "Состояние",
+                    description: `🏓Задержка хостинга: ${Date.now() - interaction.createdTimestamp}мс.\n🧵Задержка API Discord: ${Math.round(bot.ws.ping)}мс`,
+                    color: "RED",
+                    }
+                ],
                 ephemeral: false
             })
         }
