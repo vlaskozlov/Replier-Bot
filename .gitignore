@@ -1,4 +1,2 @@
-storage/
-
-.config.json
+config.json*
 1.gitignore
