@@ -2,13 +2,13 @@ const { isApplicationCommandDMInteraction } = require('discord-api-types/utils/v
 const Discord = require('discord.js'),
     config = require('./config.json');
 const { intersection } = require('zod');
-config.cfg.intents = new Discord.Intents(config.cfg.intents);       //id guild 927213497631244388
-
-const bot = new Discord.Client(config.cfg);                         //bot.application.commands.fetch()
-bot.login(config.token);                                            //.then(cmds => cmds.find(cmd => cmd.name === "name command"));
-                                                                    //bot.application.commands.delete('')
-bot                                                                 //.then(console.log)
-.on('ready', (Client)=>{                                            //.catch(console.error);
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle, Events } = require('discord.js');
+const { Client, GatewayIntentBits } = require('discord.js');                                     //id guild 927213497631244388
+const bot = new Client({ intents: [GatewayIntentBits.Guilds] });                                 //bot.application.commands.fetch()
+bot.login(config.token);                                                                         //.then(cmds => cmds.find(cmd => cmd.name === "name command"));
+                                                                                                 //bot.application.commands.delete('')
+bot                                                                                              //.then(console.log)
+.on('ready', (Client)=>{                                                                         //.catch(console.error);
     console.log('Бот запущен');
 
     bot.application.commands.create({
@@ -26,7 +26,7 @@ bot                                                                 //.then(cons
                     {
                     title: "Состояние",
                     description: `🏓Задержка хостинга: ${Date.now() - interaction.createdTimestamp}мс.\n🧵Задержка API Discord: ${Math.round(bot.ws.ping)}мс`,
-                    color: "RED",
+                    color: 0xDC143C,
                     }
                 ],
                 ephemeral: false
@@ -49,7 +49,7 @@ bot.on('interactionCreate', interaction => {
                 {
                     title: "Результат выполнения команды",
                     description: `Твой тег пользователя: ${interaction.user.tag}\nТвой айди: ${interaction.user.id}`,
-                    color: "GREEN",
+                    color: 0x7FFF00,
                     footer: {
                         text: "Можешь сохранить себе на память :)"
                     },
@@ -59,9 +59,36 @@ bot.on('interactionCreate', interaction => {
         })
     }
 });
-})  
+bot.application.commands.create({
+    name: 'test-button',
+    description: 'Команда для теста кнопок',
+    defaultPermission: true
+})
 
+bot.on('interactionCreate', interaction => {
+    if (!interaction.isChatInputCommand()) return;
 
+    if (interaction.commandName === 'test-button') {
+        const row = new ActionRowBuilder()
+        .addComponents(
+            new ButtonBuilder()
+            .setCustomId('primary')
+            .setLabel('Нажми на меня!')
+            .setStyle(ButtonStyle.Primary),
+        );
+
+        interaction.reply({ content: 'Я думаю, тебе надо,', components: [row] });
+    }
+
+bot.on('interactionCreate', interaction => {
+    if (!interaction.isButton()) return;
+    if (interaction.customId === 'primary') {
+    interaction.reply({content: 'Кнопка успешно нажата :tada: '})
+}
+})
+})
+
+})
 
 .on('messageCreate', async (message) => {
     if(message.author.bot) return;

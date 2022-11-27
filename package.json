@@ -8,7 +8,7 @@
     "combined-stream": "^1.0.8",
     "delayed-stream": "^1.0.0",
     "discord-api-types": "^0.26.1",
-    "discord.js": "^13.6.0",
+    "discord.js": "^14.6.0",
     "form-data": "^4.0.0",
     "instal": "^0.0.1-security",
     "mime-db": "^1.51.0",
