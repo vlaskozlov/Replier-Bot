@@ -115,11 +115,45 @@ bot.on('interactionCreate', async interaction => {
                     description: 'А какая палочка Твикс тебе по душе?',
                     value: 'second_option',
                 },
+                {
+                    label: 'Перед тобой стул, на нём...',
+                    description: '...',
+                    value: 'third_option',
+                },
+                {
+                    label: 'Пики точёные',
+                    description: '...',
+                    value: 'fourth_option',
+                },
+                {
+                    label: 'А на другом писюля дрочёная',
+                    description: 'Что выберешь ты?',
+                    value: 'fifth_option',
+                },
             ),
         );
     await interaction.reply({ content: 'Красный или синий провод?', components: [row] });
     }
 })
+
+bot.on(Events.InteractionCreate, async interaction => {
+    if (!interaction.isSelectMenu()) return;
+
+    const selected = interaction.values[0];
+
+    if (selected === 'first_option') {
+        await interaction.update(`${interaction.user.username}, ты выбрал птицу завтрашнего дня!`);
+    } else if (selected === 'second_option') {
+       await interaction.update(`${interaction.user.username}, тебе нравятся обе палочки твикс. Так держать!`);
+    } else if (selected === 'third_option') {
+        await interaction.update(`${interaction.user.username}, это не выбор, варианты ниже.`);
+    } else if (selected === 'fourth_option') {
+        await interaction.update(`${interaction.user.username}, ты выбрал пики. Тебя зарезали до потери сознания💀`);
+    } else if (selected === 'fifth_option') {
+        await interaction.update(`${interaction.user.username}, ты выбрал писюлю дрочёную. Твой анус расширился на 20см. ||У разрабов ботов на ДЖС такое-же дупло😉||`)
+    }
+});
+
 })
 
 
