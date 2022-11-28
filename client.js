@@ -3,12 +3,12 @@ const Discord = require('discord.js'),
     config = require('./config.json');
 const { intersection } = require('zod');
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, Events } = require('discord.js');
-const { Client, GatewayIntentBits } = require('discord.js');                                     //id guild 927213497631244388
-const bot = new Client({ intents: [GatewayIntentBits.Guilds] });                                 //bot.application.commands.fetch()
-bot.login(config.token);                                                                         //.then(cmds => cmds.find(cmd => cmd.name === "name command"));
-                                                                                                 //bot.application.commands.delete('')
-bot                                                                                              //.then(console.log)
-.on('ready', (Client)=>{                                                                         //.catch(console.error);
+const { Client, GatewayIntentBits } = require('discord.js');                                     
+const bot = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMembers] });                                 
+bot.login(config.token);                                                                         
+                                                                                                 
+bot                                                                                              
+.on('ready', (Client)=>{                                                                         
     console.log('Бот запущен');
 
     bot.application.commands.create({
