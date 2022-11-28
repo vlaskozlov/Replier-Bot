@@ -2,7 +2,7 @@ const { isApplicationCommandDMInteraction } = require('discord-api-types/utils/v
 const Discord = require('discord.js'),
     config = require('./config.json');
 const { intersection } = require('zod');
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle, Events } = require('discord.js');
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle, Events, SelectMenuBuilder } = require('discord.js');
 const { Client, GatewayIntentBits } = require('discord.js');                                     
 const bot = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMembers] });                                 
 bot.login(config.token);                                                                         
@@ -59,6 +59,7 @@ bot.on('interactionCreate', interaction => {
         })
     }
 });
+
 bot.application.commands.create({
     name: 'test-button',
     description: 'Команда для теста кнопок',
@@ -88,7 +89,39 @@ bot.on('interactionCreate', interaction => {
 })
 })
 
+bot.application.commands.create({
+    name: 'test-menus',
+    description: 'Команда для теста меню выбора',
+    defaultPermission: true
 })
+
+bot.on('interactionCreate', async interaction => {
+    if (!interaction.isChatInputCommand()) return;
+
+    if (interaction.commandName === 'test-menus') {
+        const row = new ActionRowBuilder()
+        .addComponents(
+            new SelectMenuBuilder()
+            .setCustomId('select')
+            .setPlaceholder('Ничего не выбрано')
+            .addOptions(
+                {
+                    label: 'Выбери меня',
+                    description: 'Выбери меня, выбери меня птицей счастья завтрашнего дня',
+                    value: 'first_option',
+                },
+                {
+                    label: 'Завод левой и правой палочки Твикс',
+                    description: 'А какая палочка Твикс тебе по душе?',
+                    value: 'second_option',
+                },
+            ),
+        );
+    await interaction.reply({ content: 'Красный или синий провод?', components: [row] });
+    }
+})
+})
+
 
 .on('messageCreate', async (message) => {
     if(message.author.bot) return;
