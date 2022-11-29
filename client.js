@@ -2,9 +2,13 @@ const { isApplicationCommandDMInteraction } = require('discord-api-types/utils/v
 const Discord = require('discord.js'),
     config = require('./config.json');
 const { intersection } = require('zod');
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle, Events, SelectMenuBuilder } = require('discord.js');
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle, Events, SelectMenuBuilder, TextInputStyle } = require('discord.js');
 const { Client, GatewayIntentBits } = require('discord.js');                                     
-const bot = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMembers] });                                 
+const bot = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildMessageReactions] });   
+const { QuickDB } = require ("quick.db");
+const db = new QuickDB (); 
+const { ContextMenuCommandBuilder, ApplicationCommandType, TextInputBuilder } = require('discord.js');                            
+const { channel } = require('diagnostics_channel');
 bot.login(config.token);                                                                         
                                                                                                  
 bot                                                                                              
@@ -150,11 +154,61 @@ bot.on(Events.InteractionCreate, async interaction => {
     } else if (selected === 'fourth_option') {
         await interaction.update(`${interaction.user.username}, ты выбрал пики. Тебя зарезали до потери сознания💀`);
     } else if (selected === 'fifth_option') {
-        await interaction.update(`${interaction.user.username}, ты выбрал писюлю дрочёную. Твой анус расширился на 20см. ||У разрабов ботов на ДЖС такое-же дупло😉||`)
+        await interaction.update(`${interaction.user.username}, ты выбрал писюлю дрочёную. Твой анус расширился на 20см. ||У разрабов ботов на ДЖС такое-же дупло😉||`);
+    }
+
+})
+bot.application.commands.create({
+    name: 'test-modals',
+    description: 'Команда для теста модальных окон',
+    defaultPermission: true
+})
+const { ModalBuilder } = require('discord.js');
+
+bot.on(Events.InteractionCreate, async interaction => {
+    if (!interaction.isChatInputCommand()) return;
+
+    if (interaction.command.name === 'test-modals') {
+        const modal = new ModalBuilder()
+        .setCustomId('myModal')
+        .setTitle('Окошко-лукошко');
+
+        const favoriteColorInput = new TextInputBuilder()
+        .setCustomId('favoriteColorInput')
+        .setLabel("Какой цвет тебе по душе?")
+        .setStyle(TextInputStyle.Short);
+
+        const hobbiesInput = new TextInputBuilder()
+        .setCustomId('hobbiesInput')
+        .setLabel("Какое твоё любимое хобби?")
+        .setStyle(TextInputStyle.Paragraph);
+
+        const firstActionRow = new ActionRowBuilder().addComponents(favoriteColorInput);
+        const secondActionRow = new ActionRowBuilder().addComponents(hobbiesInput);
+
+        modal.addComponents(firstActionRow, secondActionRow);
+
+        await interaction.showModal(modal);
+    }
+});
+bot.on(Events.InteractionCreate, async interaction => {
+    if (!interaction.isModalSubmit()) return;
+    if (interaction.customId === 'myModal') {
+        await interaction.reply({ content: 'Ваш ответ был успшно отправлен!' });
     }
 });
 
+bot.on(Events.InteractionCreate, async interaction => {
+    if (!interaction.isModalSubmit()) return;
+    
+    const favoriteColor = interaction.fields.getTextInputValue('favoriteColorInput');
+    const hobbies = interaction.fields.getTextInputValue('hobbiesInput');
+    console.log(`Ответы от пользователя ${interaction.user.username}\nЛюбимый цвет: ${favoriteColor}, любимое хобби: ${hobbies}`);
+});
 })
+    
+
+
 
 
 .on('messageCreate', async (message) => {
