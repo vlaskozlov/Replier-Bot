@@ -9,6 +9,7 @@ const { QuickDB } = require ("quick.db");
 const db = new QuickDB (); 
 const { ContextMenuCommandBuilder, ApplicationCommandType, TextInputBuilder } = require('discord.js');                            
 const { channel } = require('diagnostics_channel');
+const info = require('./package.json');
 bot.login(config.token);                                                                         
                                                                                                  
 bot                                                                                              
@@ -65,6 +66,60 @@ bot.on('interactionCreate', interaction => {
 });
 
 bot.application.commands.create({
+    name: 'info',
+    description: 'Подробная информация о боте',
+    defaultPermission: true
+})
+
+bot.on('interactionCreate', interaction => {
+    if (!interaction.isChatInputCommand()) return;
+
+    if (interaction.commandName === 'info') {
+        const row = new ActionRowBuilder()
+        .addComponents(
+            new ButtonBuilder()
+            .setLabel('Сервер поддержки')
+            .setStyle(ButtonStyle.Link)
+            .setURL(`https://discord.gg/zNPJRZZnMJ`),
+        )
+        .addComponents(
+            new ButtonBuilder()
+            .setCustomId('support')
+            .setLabel('Поддержать бота❤️')
+            .setStyle(ButtonStyle.Primary),
+        )
+        .addComponents(
+            new ButtonBuilder()
+            .setLabel('GitHub-репозиторий')
+            .setStyle(ButtonStyle.Link)
+            .setURL(`https://github.com/vlaskozlov/Replier-Bot`),
+        )
+
+        interaction.reply({
+            components: [row],
+            embeds: [
+                {
+                    title: "Краткая информация о боте",
+                    description: `Название бота: ${info.name}\nВерсия бота: ${info.version}\nКраткое описание: ${info.description}\nВерсия Discord.js: ${info.dependencies['discord.js']}`,
+                    color: 0xFFD700,
+                    footer: {
+                        text: "Для более подробной информации заходите на GitHub-репозиторий (кнопка снизу).\nДля помощи с ботом заходите на сервер поддержки (синяя кнопка).\nТакже вы можете поддержать бота при желании. 🤗",
+                    },
+                },
+
+            ],
+            ephemeral: false
+        })
+    }
+});
+
+bot.on('interactionCreate', interaction => {
+    if (!interaction.isButton()) return;
+    if (interaction.customId === 'support') {
+        interaction.reply({content: `Поддержать старания автора: https://www.donationalerts.com/r/vlas_kozlov `, ephemeral: false})
+    } 
+})
+bot.application.commands.create({
     name: 'test-button',
     description: 'Команда для теста кнопок',
     defaultPermission: true
@@ -89,6 +144,7 @@ bot.on('interactionCreate', interaction => {
     if (!interaction.isButton()) return;
     if (interaction.customId === 'primary') {
     interaction.reply({content: 'Кнопка успешно нажата :tada: '})
+    ephemeral: true
 }
 })
 })
