@@ -10,6 +10,7 @@ const db = new QuickDB ();
 const { ContextMenuCommandBuilder, ApplicationCommandType, TextInputBuilder } = require('discord.js');                            
 const { channel } = require('diagnostics_channel');
 const info = require('./package.json');
+const { interaction } = require('./Тихо спиздил и ушел - называется нашёл/say');
 bot.login(config.token);                                                                         
                                                                                                  
 bot                                                                                              
@@ -41,19 +42,31 @@ bot
 
 bot.application.commands.create({
     name: 'user-info',
-    description: 'Информация о пользователе, его айди',
+    description: 'Информация о пользователе, его айди и роли',
+    options: [
+        {
+            name: "another-user",
+            description: "Введи ник пользователя в это поле",
+            type: 9,
+            required: false
+        },
+    ],
     defaultPermission: true
 })
 
 bot.on('interactionCreate', interaction => {
     if (!interaction.isCommand()) return;
-
+    
+    let user = interaction.options.getUser('user');
+    let member = interaction.guild.members.cache.get(interaction.user.id);
+    let roles = member.roles.cache.map(r => `${r}`).join(' , ');
+    
     if(interaction.commandName === 'user-info') {
         interaction.reply({
             embeds: [
                 {
                     title: "Результат выполнения команды",
-                    description: `Твой тег пользователя: ${interaction.user.tag}\nТвой айди: ${interaction.user.id}`,
+                    description: `Твой тег пользователя: ${interaction.user.tag}\nТвой айди: ${interaction.user.id}\n${roles}\n${member}\n${member.tag}`,
                     color: 0x7FFF00,
                     footer: {
                         text: "Можешь сохранить себе на память :)"
@@ -67,8 +80,8 @@ bot.on('interactionCreate', interaction => {
 
 bot.application.commands.create({
     name: 'info',
-    description: 'Подробная информация о боте',
-    defaultPermission: true
+    description: 'Краткая информация о боте',
+    efaultPermission: true
 })
 
 bot.on('interactionCreate', interaction => {
@@ -84,9 +97,9 @@ bot.on('interactionCreate', interaction => {
         )
         .addComponents(
             new ButtonBuilder()
-            .setCustomId('support')
             .setLabel('Поддержать бота❤️')
-            .setStyle(ButtonStyle.Primary),
+            .setStyle(ButtonStyle.Link)
+            .setURL(`https://www.donationalerts.com/r/vlas_kozlov`), 
         )
         .addComponents(
             new ButtonBuilder()
@@ -113,12 +126,53 @@ bot.on('interactionCreate', interaction => {
     }
 });
 
-bot.on('interactionCreate', interaction => {
+/*bot.on('interactionCreate', interaction => {
     if (!interaction.isButton()) return;
     if (interaction.customId === 'support') {
         interaction.reply({content: `Поддержать старания автора: https://www.donationalerts.com/r/vlas_kozlov `, ephemeral: false})
     } 
+});*/ 
+
+bot.application.commands.create({
+    name: 'server-info',
+    description: 'Информация о сервере',
+    defaultMemberPermission: true
 })
+
+bot.on('interactionCreate', async interaction => {
+    if(!interaction.isCommand()) return;
+    let guild = interaction.guild;
+    const banner = await guild.bannerURL()?{
+        url: await guild.bannerURL()
+    }:null;
+    const icon = await await guild.iconURL()?{
+        url: await guild.iconURL()
+    }:null;
+
+    if(interaction.commandName === 'server-info') {
+        interaction.reply({
+            embeds: [
+                {
+                title: guild.name,
+                description: guild.description,
+                fields: [
+                    {
+                        name: "Количество участников на сервере", value: `${guild.memberCount}`
+                    },
+                    {
+                        name: "Владелец сервера", value: `<@${guild.ownerId}>`
+                    }
+                ],
+                image: banner,
+                //image: icon,
+                color: 0x7FFF00,
+                }
+            ],
+            ephemeral: true
+        })
+    }
+})
+
 bot.application.commands.create({
     name: 'test-button',
     description: 'Команда для теста кнопок',
@@ -147,7 +201,7 @@ bot.on('interactionCreate', interaction => {
     ephemeral: true
 }
 })
-})
+});
 
 bot.application.commands.create({
     name: 'test-menus',
@@ -213,18 +267,20 @@ bot.on(Events.InteractionCreate, async interaction => {
         await interaction.update(`${interaction.user.username}, ты выбрал писюлю дрочёную. Твой анус расширился на 20см. ||У разрабов ботов на ДЖС такое-же дупло😉||`);
     }
 
-})
+});
+
 bot.application.commands.create({
     name: 'test-modals',
     description: 'Команда для теста модальных окон',
     defaultPermission: true
 })
+
 const { ModalBuilder } = require('discord.js');
 
 bot.on(Events.InteractionCreate, async interaction => {
     if (!interaction.isChatInputCommand()) return;
 
-    if (interaction.command.name === 'test-modals') {
+    if (interaction.commandName === 'test-modals') {
         const modal = new ModalBuilder()
         .setCustomId('myModal')
         .setTitle('Окошко-лукошко');
@@ -246,21 +302,23 @@ bot.on(Events.InteractionCreate, async interaction => {
 
         await interaction.showModal(modal);
     }
-});
+})
+
 bot.on(Events.InteractionCreate, async interaction => {
     if (!interaction.isModalSubmit()) return;
     if (interaction.customId === 'myModal') {
         await interaction.reply({ content: 'Ваш ответ был успшно отправлен!' });
     }
-});
+})
 
 bot.on(Events.InteractionCreate, async interaction => {
     if (!interaction.isModalSubmit()) return;
     
     const favoriteColor = interaction.fields.getTextInputValue('favoriteColorInput');
     const hobbies = interaction.fields.getTextInputValue('hobbiesInput');
-    console.log(`Ответы от пользователя ${interaction.user.username}\nЛюбимый цвет: ${favoriteColor}, любимое хобби: ${hobbies}`);
+    console.log(`Результат выполнения команды test-modals\nОтветы от пользователя ${interaction.user.username}\nЛюбимый цвет: ${favoriteColor}, любимое хобби: ${hobbies}`);
 });
+
 })
     
 
