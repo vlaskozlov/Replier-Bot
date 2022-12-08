@@ -2,7 +2,7 @@ const { isApplicationCommandDMInteraction } = require('discord-api-types/utils/v
 const Discord = require('discord.js'),
     config = require('./config.json');
 const { intersection } = require('zod');
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle, Events, SelectMenuBuilder, TextInputStyle } = require('discord.js');
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle, Events, SelectMenuBuilder, TextInputStyle, EmbedBuilder } = require('discord.js');
 const { Client, GatewayIntentBits } = require('discord.js');                                     
 const bot = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildMessageReactions] });   
 const { QuickDB } = require ("quick.db");
@@ -10,7 +10,6 @@ const db = new QuickDB ();
 const { ContextMenuCommandBuilder, ApplicationCommandType, TextInputBuilder } = require('discord.js');                            
 const { channel } = require('diagnostics_channel');
 const info = require('./package.json');
-const { interaction } = require('./Тихо спиздил и ушел - называется нашёл/say');
 bot.login(config.token);                                                                         
                                                                                                  
 bot                                                                                              
@@ -142,33 +141,23 @@ bot.application.commands.create({
 bot.on('interactionCreate', async interaction => {
     if(!interaction.isCommand()) return;
     let guild = interaction.guild;
-    const banner = await guild.bannerURL()?{
-        url: await guild.bannerURL()
-    }:null;
-    const icon = await await guild.iconURL()?{
-        url: await guild.iconURL()
-    }:null;
+    const banner = await guild.bannerURL() || null;
+    const icon = await guild.iconURL() || null
+    const serverEmbed = new EmbedBuilder()
+    .setColor(0x7FFF00)
+    .setTitle(guild.name)
+    .setDescription(guild.description)
+    .setThumbnail(icon)
+    .setFields(
+        { name: "Количество участников на сервере", value: `${guild.memberCount}` },
+        { name: "Владелец сервера", value: `<@${guild.ownerId}>` }
+    )
+    .setImage(banner)
 
     if(interaction.commandName === 'server-info') {
         interaction.reply({
-            embeds: [
-                {
-                title: guild.name,
-                description: guild.description,
-                fields: [
-                    {
-                        name: "Количество участников на сервере", value: `${guild.memberCount}`
-                    },
-                    {
-                        name: "Владелец сервера", value: `<@${guild.ownerId}>`
-                    }
-                ],
-                image: banner,
-                //image: icon,
-                color: 0x7FFF00,
-                }
-            ],
-            ephemeral: true
+            embeds: [serverEmbed],
+            ephemeral: false
         })
     }
 })
