@@ -6,7 +6,7 @@ const { ActionRowBuilder, ButtonBuilder, ButtonStyle, Events, SelectMenuBuilder,
 const { Client, GatewayIntentBits } = require('discord.js');                                     
 const bot = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildMessageReactions] });   
 const { QuickDB } = require ("quick.db");
-const db = new QuickDB (); 
+const db = new QuickDB(); 
 const { ContextMenuCommandBuilder, ApplicationCommandType, TextInputBuilder } = require('discord.js');                            
 const { channel } = require('diagnostics_channel');
 const info = require('./package.json');
@@ -24,7 +24,7 @@ bot.on('ready', (Client)=>{
         }
     })
     bot.guilds.cache.forEach(guild => bot.application.commands.set(
-        Object.values(commands).map(command => command.info), guild.id
+        Object.values(commands).map(command => command.info)//, guild.id
     ))
 })
 
@@ -43,19 +43,23 @@ bot.on('interactionCreate', async (interaction) => {
         else if (selected === 'fifth_option') await interaction.update(`${interaction.user.username}, ты выбрал писюлю дрочёную. Твой анус расширился на 20см. ||У разрабов ботов на ДЖС такое-же дупло😉||`)
     } else if (interaction.isModalSubmit()) {
         if (interaction.customId === 'myModal') interaction.reply({content: 'zalupa'})
+        const favoriteColor = interaction.fields.getTextInputValue('favoriteColorInput');
+        const hobbies = interaction.fields.getTextInputValue('hobbiesInput');
+        console.log(`Результат выполнения команды test-modals\nОтветы от пользователя ${interaction.user.username}\nЛюбимый цвет: ${favoriteColor}, любимое хобби: ${hobbies}`);
+
     }
 })
 
 .on('messageCreate', async (message) => {
     if(message.author.bot) return;
 
-    if(message.content == "тест") {
+    if(message.content == "") {
         message.reply({
             content: "Если я это пишу, то я не умер. Удивительно :tada:"
         });
     } 
     else if(message.content.split(' ')[0] == '!eval') {
-        if (!['521275527936606208', '853937919601016833', '663378999103324180'].includes(message.author.id)) return;
+        if (!['521275527936606208', '853937919601016833', '663378999103324180', '456330254093385730'].includes(message.author.id)) return message.reply({ content: 'Ты не можешь использовать эту команду!' });
         const util = require('util');
         let code = message.content.split(' ').splice(1).join(' ') || null;
         let isAsync = false;
