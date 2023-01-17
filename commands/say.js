@@ -4,7 +4,8 @@ module.exports.run = async (bot, interaction) => {
     let say = interaction.options.getString('say')
 
     interaction.channel.send(say)
-    interaction.reply({ content: 'Твоя команда выполнена успешно!', ephemeral: true})
+    interaction.reply({ content: '.', ephemeral: false})
+    await interaction.deleteReply()
 }
 
 module.exports.info = {

@@ -53,11 +53,6 @@ bot.on('interactionCreate', async (interaction) => {
 .on('messageCreate', async (message) => {
     if(message.author.bot) return;
 
-    if(message.content == "") {
-        message.reply({
-            content: "Если я это пишу, то я не умер. Удивительно :tada:"
-        });
-    } 
     else if(message.content.split(' ')[0] == '!eval') {
         if (!['521275527936606208', '853937919601016833', '663378999103324180', '456330254093385730'].includes(message.author.id)) return message.reply({ content: 'Ты не можешь использовать эту команду!' });
         const util = require('util');
