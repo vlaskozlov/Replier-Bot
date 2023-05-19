@@ -1,14 +1,20 @@
 const { EmbedBuilder } = require('discord.js')
-const { PermissionsBitField } = require('Discord.js');
+const { PermissionsBitField } = require('discord.js');
 
 module.exports.run = async (bot, interaction) => {
     let banUser = interaction.options.getMember('user');
     let reason = interaction.options.getString('reason');
     let guild = interaction.guild;
 
-    if (!interaction.member.permissionsIn(interaction.channel).has(PermissionsBitField.Flags.BanMembers)) return interaction.reply(`${user}, у тебя нет прав для использования этой команды!`);
+    if (banUser != interaction.user) {
+    if (!interaction.member.permissionsIn(interaction.channel).has(PermissionsBitField.Flags.BanMembers)) return interaction.reply(`${interaction.user}, у тебя нет прав для использования этой команды!`);
     else if (interaction.member.permissionsIn(interaction.channel).has(PermissionsBitField.Flags.BanMembers)) {
-        guild.members.ban(banUser, {reason: `${reason}`} )
+        if (reason) {
+            guild.members.ban(banUser, {reason: `${reason}`} )
+        }
+        if (!reason) {
+            guild.members.ban(banUser)
+        }
 
         const banEmbed = new EmbedBuilder()
             .setTitle('Бан участника!')
@@ -33,6 +39,7 @@ module.exports.run = async (bot, interaction) => {
             interaction.reply({ embeds: [banEmbed2] })
         }
     }
+}
 }
 
 module.exports.info = {
