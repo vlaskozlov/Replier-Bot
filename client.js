@@ -2,11 +2,10 @@ const { isApplicationCommandDMInteraction } = require('discord-api-types/utils/v
 const Discord = require('discord.js'),
     config = require('./config.json');
 const { intersection } = require('zod');
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle, Events, SelectMenuBuilder, TextInputStyle, EmbedBuilder } = require('discord.js');
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle, Events, SelectMenuBuilder, TextInputStyle, EmbedBuilder, messageEmbed } = require('discord.js');
 const { Client, GatewayIntentBits } = require('discord.js');                                     
 const bot = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildMessageReactions] });   
-const { QuickDB } = require ("quick.db");
-const db = new QuickDB(); 
+const { QuickDB } = require ("quick.db"); 
 const { ContextMenuCommandBuilder, ApplicationCommandType, TextInputBuilder } = require('discord.js');                            
 const { channel } = require('diagnostics_channel');
 const info = require('./package.json');
@@ -26,6 +25,38 @@ bot.on('ready', (Client)=>{
     bot.guilds.cache.forEach(guild => bot.application.commands.set(
         Object.values(commands).map(command => command.info)//, guild.id
     ))
+
+const count = bot.guilds.cache.size
+bot.user.setActivity(`Смотрю на ${count} серверов`),
+bot.user.setPresence({status: 'idle'})
+})
+
+bot.on('guildCreate', async guild => {
+    const db = new QuickDB({ filePath: `settings/${guild.name}.sqlite` });
+    const serverAddLog = new EmbedBuilder()
+    .setTitle("Добавление на сервер")
+    .setDescription(`Я был только что добавлен на сервер с названием: ${guild.name}\nВсего участников сервера: ${guild.memberCount}.\n\nВсего теперь у меня серверов: ${bot.guilds.cache.size}`)
+    .setColor(0x7FFF00)
+    .setTimestamp()
+
+    const LogChannel = bot.channels.cache.get('1073923196664950785')
+    LogChannel.send({embeds: [serverAddLog]})
+    await db.table(`settings`)
+    const count = bot.guilds.cache.size
+    bot.user.setActivity(`Смотрю на ${count} серверов`)
+})
+
+bot.on('guildDelete', guild => {
+    const serverDeleteLog = new EmbedBuilder()
+    .setTitle("Удаление с сервера")
+    .setDescription(`Я был кикнут с сервера ${guild.name}\nОбщее количество участников сервера: ${guild.memberCount}\n\nОбщее количество серверов теперь: ${bot.guilds.cache.size}`)
+    .setColor(0xDC143C)
+    .setTimestamp()
+
+    const LogChannel = bot.channels.cache.get('1073923196664950785')
+    LogChannel.send({embeds: [serverDeleteLog]})
+    const count = bot.guilds.cache.size
+    bot.user.setActivity(`Смотрю на ${count} серверов`)
 })
 
 bot.on('interactionCreate', async (interaction) => {
@@ -41,13 +72,13 @@ bot.on('interactionCreate', async (interaction) => {
         else if (selected === 'third_option') await interaction.update(`${interaction.user.username}, это не выбор, варианты ниже.`) 
         else if (selected === 'fourth_option') await interaction.update(`${interaction.user.username}, ты выбрал пики. Тебя зарезали до потери сознания💀`)
         else if (selected === 'fifth_option') await interaction.update(`${interaction.user.username}, ты выбрал писюлю дрочёную. Твой анус расширился на 20см. ||У разрабов ботов на ДЖС такое-же дупло😉||`)
-    } else if (interaction.isModalSubmit()) {
+    } /*else if (interaction.isModalSubmit()) {
         if (interaction.customId === 'myModal') interaction.reply({content: 'zalupa'})
         const favoriteColor = interaction.fields.getTextInputValue('favoriteColorInput');
         const hobbies = interaction.fields.getTextInputValue('hobbiesInput');
         console.log(`Результат выполнения команды test-modals\nОтветы от пользователя ${interaction.user.username}\nЛюбимый цвет: ${favoriteColor}, любимое хобби: ${hobbies}`);
 
-    }
+    }*/
 })
 
 .on('messageCreate', async (message) => {

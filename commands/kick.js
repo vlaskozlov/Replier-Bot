@@ -1,5 +1,5 @@
 const { EmbedBuilder } = require('discord.js')
-const { PermissionsBitField } = require('Discord.js');
+const { PermissionsBitField } = require('discord.js');
 
 module.exports.run = async (bot, interaction) => {
     let kickUser = interaction.options.getMember('user');

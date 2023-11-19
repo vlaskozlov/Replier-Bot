@@ -7,14 +7,14 @@ module.exports.run = async (bot, interaction) => {
         new ButtonBuilder()
         .setLabel('Поддержать бота')
         .setStyle(ButtonStyle.Link)
-        .setURL(`https://www.donationalerts.com/r/vlas_kozlov`)
+        .setURL(`https://www.donationalerts.com/r/vlaskozlov`)
         .setEmoji('❤️'),
     )
     .addComponents(
         new ButtonBuilder()
         .setLabel('Сервер поддержки')
         .setStyle(ButtonStyle.Link)
-        .setURL(`https://discord.gg/zNPJRZZnMJ`),
+        .setURL(`https://discord.gg/7NxYf4WsqQ`),
     )
     .addComponents(
         new ButtonBuilder()

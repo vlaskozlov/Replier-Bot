@@ -1,4 +1,4 @@
-const { ModalBuilder, TextInputStyle, TextInputBuilder, ActionRowBuilder } = require('discord.js')
+const { ModalBuilder, TextInputStyle, TextInputBuilder, ActionRowBuilder, Events } = require('discord.js')
 
 module.exports.run = async (bot, interaction) => {
     const modal = new ModalBuilder()
@@ -21,6 +21,16 @@ module.exports.run = async (bot, interaction) => {
     modal.addComponents(firstActionRow, secondActionRow);
 
     await interaction.showModal(modal);
+
+bot.on(Events.InteractionCreate, async interaction => {
+    if (interaction.isModalSubmit()) {
+        if (interaction.customId === 'myModal') interaction.reply({content: 'zalupa'})
+        const favoriteColor = interaction.fields.getTextInputValue('favoriteColorInput');
+        const hobbies = interaction.fields.getTextInputValue('hobbiesInput');
+        console.log(`Результат выполнения команды test-modals\nОтветы от пользователя ${interaction.user.username}\nЛюбимый цвет: ${favoriteColor}, любимое хобби: ${hobbies}`);
+
+    }
+})
 }
 
 module.exports.info = {
