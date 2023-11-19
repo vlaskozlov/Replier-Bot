@@ -1,6 +1,6 @@
 {
   "name": "replier-bot",
-  "version": "Alpha 0.4.2",
+  "version": "Alpha 0.4.3",
   "description": "Данное описание пока отсутствует",
   "main": "client.js",
   "dependencies": {
