@@ -6,40 +6,19 @@ module.exports.run = async (bot, interaction) => {
     let reason = interaction.options.getString('reason');
     let guild = interaction.guild;
 
-    if (banUser != interaction.user) {
-    if (!interaction.member.permissionsIn(interaction.channel).has(PermissionsBitField.Flags.BanMembers)) return interaction.reply(`${interaction.user}, у тебя нет прав для использования этой команды!`);
-    else if (interaction.member.permissionsIn(interaction.channel).has(PermissionsBitField.Flags.BanMembers)) {
-        if (reason) {
-            guild.members.ban(banUser, {reason: `${reason}`} )
-        }
-        if (!reason) {
-            guild.members.ban(banUser)
-        }
+    if(banUser.equals(interaction.member)) return interaction.reply(`${interaction.user}, зачем банить самого себя?`);
+    if(!interaction.member.permissionsIn(interaction.channel).has(PermissionsBitField.Flags.BanMembers)) return interaction.reply(`${interaction.user}, у тебя нет прав для использования этой команды!`);
 
-        const banEmbed = new EmbedBuilder()
-            .setTitle('Бан участника!')
-            .setDescription(`${banUser} успешно забанен.`)
-            .setColor(0xDC143C)
-            .setFields(
-                { name: '**Модератор**', value: `${interaction.member}` },
-                { name: '**Причина**', value: `${reason}` }
-            )
+    await guild.members.ban(banUser, { reason: `${reason}` }).catch(console.error);
 
-        const banEmbed2 = new EmbedBuilder()
-            .setTitle('Бан участника!')
-            .setDescription(`${banUser} успешно забанен.`)
-            .setColor(0xDC143C)
-            .setFields(
-                { name: '**Модератор**', value: `${interaction.member}` }
-            )
-        if (reason) {
-            interaction.reply({ embeds: [banEmbed] })
-        }
-        if (!reason) {
-            interaction.reply({ embeds: [banEmbed2] })
-        }
-    }
-}
+    const banEmbed = new EmbedBuilder()
+        .setTitle('Бан участника!')
+        .setDescription(`${banUser} успешно забанен.`)
+        .setColor(0xDC143C)
+        .setFields({ name: '**Модератор**', value: `${interaction.member}` });
+    if(reason) banEmbed.addFields([ { name: '**Причина**', value: `${reason}` } ]);
+
+    return interaction.reply({ embeds: [banEmbed] });
 }
 
 module.exports.info = {
