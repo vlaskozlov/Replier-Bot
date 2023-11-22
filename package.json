@@ -1,29 +1,15 @@
 {
-  "name": "replier-bot",
+  "name": "kremlebot",
   "version": "Alpha 0.4.3",
   "description": "Данное описание пока отсутствует",
   "main": "client.js",
   "dependencies": {
     "asynckit": "^0.4.0",
-    "better-sqlite3": "^8.0.0",
-    "combined-stream": "^1.0.8",
-    "delayed-stream": "^1.0.0",
     "discord-api-types": "^0.26.1",
     "discord.js": "14.6.0",
-    "form-data": "^4.0.0",
-    "instal": "^0.0.1-security",
-    "mime-db": "^1.51.0",
-    "mime-types": "^2.1.34",
+    "mongodb": "^6.3.0",
     "node-fetch": "^2.6.7",
-    "promise-mysql": "^5.2.0",
-    "quick.db": "^9.0.6",
-    "tr46": "^0.0.3",
-    "ts-mixer": "^6.0.0",
-    "tslib": "^2.3.1",
-    "webidl-conversions": "^3.0.1",
-    "whatwg-url": "^5.0.0",
-    "ws": "^8.5.0",
-    "zod": "^3.12.0"
+    "webidl-conversions": "^3.0.1"
   },
   "repository": {
     "type": "git",
@@ -35,6 +21,6 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Vlas Kozlov#6872",
+  "author": "vlaskozlov",
   "license": "ISC"
 }

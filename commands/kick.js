@@ -1,5 +1,4 @@
-const { EmbedBuilder } = require('discord.js')
-const { PermissionsBitField } = require('discord.js');
+const { EmbedBuilder, PermissionsBitField, codeBlock } = require('discord.js');
 
 module.exports.run = async (bot, interaction) => {
     let kickUser = interaction.options.getMember('user');
@@ -8,7 +7,7 @@ module.exports.run = async (bot, interaction) => {
 
     if (!interaction.member.permissionsIn(interaction.channel).has(PermissionsBitField.Flags.KickMembers)) return interaction.reply(`${user}, у тебя нет прав для использования этой команды!`);
     else if (interaction.member.permissionsIn(interaction.channel).has(PermissionsBitField.Flags.KickMembers)) {
-        guild.members.kick(kickUser, `${reason}` )
+        await guild.members.kick(kickUser, `${reason}` ).catch((err) => interaction.reply({ content: 'ой бля кажется тут небольшие тех шоколадки, вот тебе немного говна:' + codeBlock('js', err) }))
 
         const kickEmbed = new EmbedBuilder()
             .setTitle('Кик участника!')
@@ -28,11 +27,11 @@ module.exports.run = async (bot, interaction) => {
             )
 
     if (reason) {
-        interaction.reply({ embeds: [kickEmbed] })
+        interaction.reply({ embeds: [kickEmbed] }).catch(() => {})
         }
     else if (!reason) {
-        interaction.reply({ embeds: [kickEmbed2] })
-    }
+        interaction.reply({ embeds: [kickEmbed2] }).catch(() => {})
+        }
     }
 }
 

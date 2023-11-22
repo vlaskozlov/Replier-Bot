@@ -1,5 +1,4 @@
 const { EmbedBuilder } = require('discord.js')
-const { QuickDB } = require ("quick.db");
 
 module.exports.run = async (bot, interaction, guildMember) => {
     const {author} = interaction;

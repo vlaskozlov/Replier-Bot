@@ -1,11 +1,9 @@
 const { isApplicationCommandDMInteraction } = require('discord-api-types/utils/v9');
 const Discord = require('discord.js'),
     config = require('./config.json');
-const { intersection } = require('zod');
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, Events, SelectMenuBuilder, TextInputStyle, EmbedBuilder, messageEmbed } = require('discord.js');
 const { Client, GatewayIntentBits } = require('discord.js');                                     
 const bot = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildMessageReactions] });   
-const { QuickDB } = require ("quick.db"); 
 const { ContextMenuCommandBuilder, ApplicationCommandType, TextInputBuilder } = require('discord.js');                            
 const { channel } = require('diagnostics_channel');
 const info = require('./package.json');
@@ -31,8 +29,11 @@ bot.user.setActivity(`Смотрю на ${count} серверов`),
 bot.user.setPresence({status: 'idle'})
 })
 
+process.on('uncaughtException', async(error) => {
+    console.error(error)
+});
+
 bot.on('guildCreate', async guild => {
-    const db = new QuickDB({ filePath: `settings/${guild.name}.sqlite` });
     const serverAddLog = new EmbedBuilder()
     .setTitle("Добавление на сервер")
     .setDescription(`Я был только что добавлен на сервер с названием: ${guild.name}\nВсего участников сервера: ${guild.memberCount}.\n\nВсего теперь у меня серверов: ${bot.guilds.cache.size}`)
@@ -41,7 +42,6 @@ bot.on('guildCreate', async guild => {
 
     const LogChannel = bot.channels.cache.get('1073923196664950785')
     LogChannel.send({embeds: [serverAddLog]})
-    await db.table(`settings`)
     const count = bot.guilds.cache.size
     bot.user.setActivity(`Смотрю на ${count} серверов`)
 })
