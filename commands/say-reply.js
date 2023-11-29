@@ -7,7 +7,7 @@ module.exports.run = async (bot, interaction) => {
 
     const modal = new ModalBuilder()
     .setCustomId('modal')
-    .setTitle('Окошко-лукошко');
+    .setTitle('Ответ на сообщение');
 
     const MessageContent = new TextInputBuilder()
     .setCustomId('userReply')

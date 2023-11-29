@@ -1,6 +1,6 @@
 {
   "name": "kremlebot",
-  "version": "Alpha 0.4.3",
+  "version": "Alpha 0.4.4",
   "description": "Данное описание пока отсутствует",
   "main": "client.js",
   "dependencies": {

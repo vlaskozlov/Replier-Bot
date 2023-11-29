@@ -1,13 +1,14 @@
 const { isApplicationCommandDMInteraction } = require('discord-api-types/utils/v9');
 const Discord = require('discord.js'),
     config = require('./config.json');
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle, Events, SelectMenuBuilder, TextInputStyle, EmbedBuilder, messageEmbed } = require('discord.js');
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle, Events, SelectMenuBuilder, TextInputStyle, EmbedBuilder, messageEmbed, codeBlock } = require('discord.js');
 const { Client, GatewayIntentBits } = require('discord.js');                                     
 const bot = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildMessageReactions] });   
 const { ContextMenuCommandBuilder, ApplicationCommandType, TextInputBuilder } = require('discord.js');                            
 const { channel } = require('diagnostics_channel');
 const info = require('./package.json');
 const fs = require('fs');
+const LogChannel = bot.channels.cache.get('1073923196664950785')
 bot.login(config.token);                                                                   
 
 let commands = {} 
@@ -40,7 +41,6 @@ bot.on('guildCreate', async guild => {
     .setColor(0x7FFF00)
     .setTimestamp()
 
-    const LogChannel = bot.channels.cache.get('1073923196664950785')
     LogChannel.send({embeds: [serverAddLog]})
     const count = bot.guilds.cache.size
     bot.user.setActivity(`Смотрю на ${count} серверов`)

@@ -1,5 +1,4 @@
-const { EmbedBuilder } = require('discord.js')
-const { PermissionsBitField } = require('discord.js');
+const { EmbedBuilder, PermissionsBitField } = require('discord.js')
 
 module.exports.run = async (bot, interaction) => {
     let banUser = interaction.options.getMember('user');
@@ -9,7 +8,7 @@ module.exports.run = async (bot, interaction) => {
     if(banUser.equals(interaction.member)) return interaction.reply(`${interaction.user}, зачем банить самого себя?`);
     if(!interaction.member.permissionsIn(interaction.channel).has(PermissionsBitField.Flags.BanMembers)) return interaction.reply(`${interaction.user}, у тебя нет прав для использования этой команды!`);
 
-    await guild.members.ban(banUser, { reason: `${reason}` }).catch(console.error);
+    await guild.members.ban(banUser, {reason}).catch(console.error);
 
     const banEmbed = new EmbedBuilder()
         .setTitle('Бан участника!')
