@@ -6,7 +6,7 @@ module.exports.run = async (bot, interaction) => {
     const user = interaction.targetMessage
 
     const modal = new ModalBuilder()
-    .setCustomId('modal')
+    .setCustomId('answer-content')
     .setTitle('Ответ на сообщение');
 
     const MessageContent = new TextInputBuilder()
@@ -26,17 +26,16 @@ module.exports.run = async (bot, interaction) => {
             
             const reply = interaction.fields.getTextInputValue('userReply');
             await user.reply(reply)
-            if (interaction.customId === 'modal') {
-                interaction.reply({content: 'Ответ успешно отправлен!', ephemeral: true })
+            if (interaction.customId === 'answer-content') {
+                interaction.reply({ content: '.', ephemeral: false})
+                await interaction.deleteReply()
             }
         }
     })
 }
 
-
-
-
 module.exports.info = {
-    name: 'context-menus',
-    type: 3
+    name: 'say-reply',
+    type: 3,
+    description: 'Сделать ответ на конкретное сообщение от лица бота'
 }

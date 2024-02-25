@@ -1,12 +1,12 @@
 {
   "name": "kremlebot",
-  "version": "Alpha 0.4.4",
+  "version": "Alpha 0.4.5",
   "description": "Данное описание пока отсутствует",
   "main": "client.js",
   "dependencies": {
     "asynckit": "^0.4.0",
     "discord-api-types": "^0.26.1",
-    "discord.js": "14.6.0",
+    "discord.js": "14.14.1",
     "mongodb": "^6.3.0",
     "node-fetch": "^2.6.7",
     "webidl-conversions": "^3.0.1"

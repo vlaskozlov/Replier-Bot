@@ -1,9 +1,9 @@
-const { ActionRowBuilder, SelectMenuBuilder, InteractionCollector } = require('discord.js')
+const { ActionRowBuilder, StringSelectMenuBuilder, InteractionCollector } = require('discord.js')
 
 module.exports.run = async (bot, interaction) => {
     const row = new ActionRowBuilder()
     .addComponents(
-        new SelectMenuBuilder()
+        new StringSelectMenuBuilder()
         .setCustomId('select')
         .setPlaceholder('Ничего не выбрано')
         .addOptions(

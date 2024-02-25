@@ -3,10 +3,4 @@ json.sqlite
 package-lock.json
 config.json
 settings/
-db-set.js 
 start.bat
-commands/toggle-avatar.js
-commands/settings.js
-commands/set-word.js
-commands/db-check.js
-commands/gpt.js

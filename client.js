@@ -1,4 +1,3 @@
-const { isApplicationCommandDMInteraction } = require('discord-api-types/utils/v9');
 const Discord = require('discord.js'),
     config = require('./config.json');
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, Events, SelectMenuBuilder, TextInputStyle, EmbedBuilder, messageEmbed, codeBlock } = require('discord.js');
@@ -8,7 +7,8 @@ const { ContextMenuCommandBuilder, ApplicationCommandType, TextInputBuilder } = 
 const { channel } = require('diagnostics_channel');
 const info = require('./package.json');
 const fs = require('fs');
-const LogChannel = bot.channels.cache.get('1073923196664950785')
+const LogChannel = bot.channels.cache.get('1073923196664950785');
+const { MongoClient, ServerApiVersion } = require('mongodb');
 bot.login(config.token);                                                                   
 
 let commands = {} 
@@ -28,10 +28,19 @@ bot.on('ready', (Client)=>{
 const count = bot.guilds.cache.size
 bot.user.setActivity(`Смотрю на ${count} серверов`),
 bot.user.setPresence({status: 'idle'})
-})
+});
+
+const client = new MongoClient(config.mongodb);
+  async function run() {
+    return await client.connect().then(console.log('chlen'));
+  }
+run().catch(console.dir);
 
 process.on('uncaughtException', async(error) => {
     console.error(error)
+    const LogChannel = bot.channels.cache.get('1211340945275224086')
+    LogChannel.send(`Произошла непредвиденная ошибка в коде, вот её содержание:\n` + codeBlock('js', error))
+
 });
 
 bot.on('guildCreate', async guild => {
@@ -41,6 +50,7 @@ bot.on('guildCreate', async guild => {
     .setColor(0x7FFF00)
     .setTimestamp()
 
+    const LogChannel = bot.channels.cache.get('1073923196664950785')
     LogChannel.send({embeds: [serverAddLog]})
     const count = bot.guilds.cache.size
     bot.user.setActivity(`Смотрю на ${count} серверов`)
@@ -65,7 +75,7 @@ bot.on('interactionCreate', async (interaction) => {
         if (command) await command.run(bot, interaction)
     } else if (interaction.isButton()) {
         if (interaction.customId === 'primary') interaction.reply({content: 'тест'})
-    } else if (interaction.isSelectMenu()) {
+    } else if (interaction.isStringSelectMenu()) {
         const selected = interaction.values[0];
         if (selected === 'first_option') await interaction.update(`${interaction.user.username}, ты выбрал птицу завтрашнего дня!`) 
         else if (selected === 'second_option') await interaction.update(`${interaction.user.username}, тебе нравятся обе палочки твикс. Так держать!`) 

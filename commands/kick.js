@@ -4,10 +4,9 @@ module.exports.run = async (bot, interaction) => {
     let kickUser = interaction.options.getMember('user');
     let reason = interaction.options.getString('reason');
     let guild = interaction.guild;
-    const LogChannel = bot.channels.cache.get('1073923196664950785')
 
     if(kickUser.equals(interaction.member)) return interaction.reply(`${interaction.user}, зачем выгонять самого себя?`);
-    if (!interaction.member.permissionsIn(interaction.channel).has(PermissionsBitField.Flags.KickMembers)) return interaction.reply(`${user}, у тебя нет прав для использования этой команды!`);
+    if (!interaction.member.permissionsIn(interaction.channel).has(PermissionsBitField.Flags.KickMembers)) return interaction.reply(`${interaction.user}, у тебя нет прав для использования этой команды!`);
     else if (interaction.member.permissionsIn(interaction.channel).has(PermissionsBitField.Flags.KickMembers)) {
         await guild.members.kick(kickUser, `${reason}` ).catch((err) => interaction.reply({ content: 'ой бля кажется тут небольшие тех шоколадки, вот тебе немного говна:' + codeBlock('js', err) }))
         

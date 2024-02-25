@@ -1,4 +1,4 @@
-const { EmbedBuilder, PermissionsBitField } = require('discord.js')
+const { EmbedBuilder, PermissionsBitField, codeBlock } = require('discord.js')
 
 module.exports.run = async (bot, interaction) => {
     let banUser = interaction.options.getMember('user');
@@ -6,9 +6,10 @@ module.exports.run = async (bot, interaction) => {
     let guild = interaction.guild;
 
     if(banUser.equals(interaction.member)) return interaction.reply(`${interaction.user}, зачем банить самого себя?`);
-    if(!interaction.member.permissionsIn(interaction.channel).has(PermissionsBitField.Flags.BanMembers)) return interaction.reply(`${interaction.user}, у тебя нет прав для использования этой команды!`);
-
-    await guild.members.ban(banUser, {reason}).catch(console.error);
+    if (!interaction.member.permissionsIn(interaction.channel).has(PermissionsBitField.Flags.BanMembers)) return interaction.reply(`${interaction.user}, у тебя нет прав для использования этой команды!`);
+    else if (interaction.member.permissionsIn(interaction.channel).has(PermissionsBitField.Flags.BanMembers)) {
+        await guild.members.ban(banUser, {reason}).catch((err) => interaction.reply({ content: 'Ой бля, кажется, тут небольшие тех шоколадки, вот тебе немного говна:' + codeBlock('js', err) }))
+        
 
     const banEmbed = new EmbedBuilder()
         .setTitle('Бан участника!')
@@ -18,6 +19,7 @@ module.exports.run = async (bot, interaction) => {
     if(reason) banEmbed.addFields([ { name: '**Причина**', value: `${reason}` } ]);
 
     return interaction.reply({ embeds: [banEmbed] });
+    }
 }
 
 module.exports.info = {
