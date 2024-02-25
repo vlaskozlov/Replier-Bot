@@ -36,6 +36,5 @@ module.exports.run = async (bot, interaction) => {
 
 module.exports.info = {
     name: 'say-reply',
-    type: 3,
-    description: 'Сделать ответ на конкретное сообщение от лица бота'
+    type: 3
 }
